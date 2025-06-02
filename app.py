@@ -17,7 +17,7 @@ def get_base64_image(image: Image.Image):
     img_bytes = buffered.getvalue()
     return base64.b64encode(img_bytes).decode()
 
-profile_pic = Image.open("profile.jpg")
+profile_pic = Image.open("profile_pic.jpg")
 profile_pic_base64 = get_base64_image(profile_pic)
 
 # --- CUSTOM CSS STYLING ---
