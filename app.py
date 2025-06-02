@@ -1,27 +1,79 @@
 import streamlit as st
 from PIL import Image
+import base64
+from io import BytesIO
 
 # Set up the page
 st.set_page_config(page_title="Navaneetha Krishnan R", layout="wide")
 
-# Load resume and image
+# Load resume
 with open("Navaneeth_resume 20dec.pdf", "rb") as pdf_file:
     PDFbyte = pdf_file.read()
 
-profile_pic = Image.open("profile_pic.jpg")  # Make sure this file is in the same folder
+# Load and encode profile picture
+def get_base64_image(image: Image.Image):
+    buffered = BytesIO()
+    image.save(buffered, format="PNG")
+    img_bytes = buffered.getvalue()
+    return base64.b64encode(img_bytes).decode()
 
-# --- HEADER ---
-st.write("")
+profile_pic = Image.open("profile.jpg")
+profile_pic_base64 = get_base64_image(profile_pic)
 
+# --- CUSTOM CSS STYLING ---
+st.markdown(f"""
+    <style>
+        /* Page background and text */
+        body {{
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+        }}
+        /* Profile image styling */
+        .profile-pic {{
+            border-radius: 50%;
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+            animation: fadeIn 1.5s ease-in-out;
+        }}
+        /* Text animation */
+        .fade-text {{
+            animation: fadeIn 2s ease-in-out;
+        }}
+        /* Button styling */
+        .stDownloadButton > button {{
+            background-color: #1f77b4;
+            color: white;
+            border-radius: 8px;
+            padding: 0.6em 1.2em;
+            font-size: 16px;
+            transition: 0.3s ease-in-out;
+        }}
+        .stDownloadButton > button:hover {{
+            background-color: #45aaf2;
+            transform: scale(1.05);
+        }}
+        /* Fade animation */
+        @keyframes fadeIn {{
+            0% {{ opacity: 0; transform: translateY(20px); }}
+            100% {{ opacity: 1; transform: translateY(0); }}
+        }}
+    </style>
+""", unsafe_allow_html=True)
+
+# --- HEADER SECTION ---
 col1, col2 = st.columns([1, 4], gap="large")
 
 with col1:
-    st.image(profile_pic, width=180)
+    st.markdown(f"""
+        <img class="profile-pic" src="data:image/png;base64,{profile_pic_base64}" alt="Profile Pic">
+    """, unsafe_allow_html=True)
 
 with col2:
-    st.markdown("<h1 style='margin-bottom: 0;'>Navaneetha Krishnan R</h1>", unsafe_allow_html=True)
-    st.markdown("🎓 <b>B.Tech in Artificial Intelligence and Data Science</b>", unsafe_allow_html=True)
-    st.markdown("💻 Python | 🤖 AI/ML | 🧠 Deep Learning | 📸 OpenCV | 🛠️ OCR", unsafe_allow_html=True)
+    st.markdown("<h1 class='fade-text'>Navaneetha Krishnan R</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='fade-text'>🎓 <b>B.Tech in Artificial Intelligence and Data Science</b></p>", unsafe_allow_html=True)
+    st.markdown("<p class='fade-text'>💻 Python | 🤖 AI/ML | 🧠 Deep Learning | 📸 OpenCV | 🛠️ OCR</p>", unsafe_allow_html=True)
     st.download_button(
         label="📄 Download Resume",
         data=PDFbyte,
@@ -68,7 +120,8 @@ projects = [
     "Posture Recognition for astronauts using OpenCV",
     "Sentiment Analysis using Voice",
     "Text Extraction using OCR in Python",
-    "Image Classification using CNN on CIFAR dataset"
+    "Image Classification using CNN on CIFAR dataset",
+    "AI Story Generator using Cohere API"
 ]
 for p in projects:
     st.write(f"🔹 {p}")
@@ -81,8 +134,8 @@ st.write("""
 - Oct 2023 – Dec 2023: Worked on emotion recognition from speech, chat, and face for mentally ill patients  
 - Apr 2024 – May 2024: Worked on OCR and image-captioning model research
          
-**Intern- Workcohol Solutions**
-- Apr 2025 – currently working: Working on Creating AI modules 
+**Intern – Workcohol solutions**
+- Apr 2025 – currently working: Working on Creating AI models
 """)
 
 # --- CERTIFICATIONS ---
